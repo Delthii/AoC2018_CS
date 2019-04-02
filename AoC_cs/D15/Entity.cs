@@ -26,8 +26,7 @@ namespace AoC_cs.D15
 
         public int CompareTo(Entity other)
         {
-            if (X == other.X) return Y.CompareTo(other.Y);
-            return X.CompareTo(other.X);
+            return X == other.X ? Y.CompareTo(other.Y) : X.CompareTo(other.X);
         }
     }
 

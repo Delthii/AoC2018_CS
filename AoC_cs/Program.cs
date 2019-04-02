@@ -8,7 +8,7 @@ namespace AoC_cs
         static void Main(string[] args)
         {
             IAoC day15 = new Day15();
-            //Console.WriteLine(day15.PartA());
+            Console.WriteLine(day15.PartA());
             Console.WriteLine(day15.PartB());
         }
     }

@@ -83,7 +83,7 @@ namespace AoC_cs.D15
                     Move(unit);
                     Attack(unit);
                     if (!_elves.Any(u => u.Alive) || !_goblins.Any(u => u.Alive))
-                        return Units.Where(u => u.Alive).Sum(u => u.Health) * (count);
+                        return Units.Where(u => u.Alive).Sum(u => u.Health) * count;
                 }
                 count++;
             }
@@ -91,7 +91,7 @@ namespace AoC_cs.D15
 
         public string PartB()
         {
-            for (var i = 4; i < 200; i++)
+            for (var i = 4;; i++)
             {
                 ParseAndInit(i);
                 var ans = SolveA();
@@ -100,8 +100,6 @@ namespace AoC_cs.D15
                     return "" + ans;
                 }
             }
-
-            return "No solution";
         }
 
         private bool Move(Unit unit)
@@ -114,7 +112,7 @@ namespace AoC_cs.D15
             if (!reachableTiles.Any()) return false;
 
             var nearestTile = GetNearestTile(reachableTiles);
-            var nextMove = GetFirstMoveOnPath(unit, map, nearestTile);
+            var nextMove = GetFirstMoveOnPath(unit, nearestTile, map);
             unit.Move(nextMove);
 
             return true;
@@ -142,16 +140,16 @@ namespace AoC_cs.D15
             return enemies;
         }
 
-        private Entity GetFirstMoveOnPath(Entity unit, bool[,] map, Entity closestTile)
+        private Entity GetFirstMoveOnPath(Entity start, Entity goal, bool[,] map)
         {
-            var nextTile = Adjacent(unit, map)
-                .Select(adjTile => Tuple.Create(adjTile, CalcDistance(adjTile, closestTile)))
+           return
+                 Adjacent(start, map)
+                .Select(adjTile => Tuple.Create(adjTile, CalcDistance(adjTile, goal)))
                 .Where(tile => tile.Item2 >= 0).ToList()
                 .OrderBy(e => e.Item2)
                 .ThenBy(e => e.Item1)
                 .First()
                 .Item1;
-            return nextTile;
         }
 
         private static Entity GetNearestTile(IEnumerable<Tuple<Entity, int>> nearest)
@@ -162,14 +160,14 @@ namespace AoC_cs.D15
 
         private List<Tuple<Entity, int>> GetReachableTilesAdjacentToEnemies(Entity unit, IEnumerable<Unit> enemies, bool[,] map)
         {
-            var nearest = enemies
+            return 
+                enemies
                 .SelectMany(enemy => Adjacent(enemy, map))
                 .Select(adjTile => Tuple.Create(adjTile, CalcDistance(unit, adjTile)))
                 .Where(tile => tile.Item2 > 0)
                 .OrderBy(e => e.Item2)
                 .ThenBy(e => e.Item1)
                 .ToList();
-            return nearest;
         }
 
         private int CalcDistance(Entity start, Entity goal)
